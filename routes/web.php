@@ -1,10 +1,14 @@
 <?php
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'welcome');
 
+
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 
 // Rerdirects all nonexisting rutes to selected route
@@ -12,7 +16,3 @@ Route::get('/', function () {
 Route::any('{query}', function(){
     return redirect('/');
 })->where('query', '.*');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
