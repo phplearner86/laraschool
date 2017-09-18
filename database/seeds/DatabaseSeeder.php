@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    protected $tables = ['users', 'roles', 'role_user', 'teachers', 'subjects'];
+    protected $tables = ['users', 'roles', 'role_user', 'teachers', 'subjects', 'classrooms'];
     /**
      * Run the database seeds.
      *
@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleUserTableSeeder::class);
         $this->call(TeachersTableSeeder::class);
         $this->call(SubjectsTableSeeder::class);
+        $this->call(ClassroomsTableSeeder::class);
     }
 
       public function cleanDatabase()
