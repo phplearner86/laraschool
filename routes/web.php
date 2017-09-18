@@ -12,3 +12,7 @@ Route::get('/', function () {
 Route::any('{query}', function(){
     return redirect('/');
 })->where('query', '.*');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
