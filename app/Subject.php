@@ -9,15 +9,21 @@ class Subject extends Model
 {
     protected $fillable = ['name'];
 
-   public function getRouteKeyName()
-   {
-       return 'slug';
-   }
 
    protected static function boot()
    {
         parent::boot();
 
         static::observe(SubjectObserver::class);
+   }
+
+   public function getRouteKeyName()
+   {
+       return 'slug';
+   }
+
+   public function teachers()
+   {
+     return $this->belongsToMany(Teacher::class)->withPivot('clasroom_id');
    }
 }
