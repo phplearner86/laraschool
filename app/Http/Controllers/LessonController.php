@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Lesson;
+use App\User;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -12,7 +13,7 @@ class LessonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
         //
     }
@@ -22,9 +23,10 @@ class LessonController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
-        //
+
+        return view('lessons.create', compact('user'));
     }
 
     /**
@@ -33,9 +35,16 @@ class LessonController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        //Create lesson
+        $lesson = Lesson::new($request);
+
+        //Assign the lesson to the user
+        $user->assignLesson($lesson);
+
+        flash()->success('Lesson has been created');
+        return back();
     }
 
     /**
@@ -44,7 +53,7 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function show(Lesson $lesson)
+    public function show(Lesson $lesson, User $user)
     {
         //
     }
@@ -55,7 +64,7 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function edit(Lesson $lesson)
+    public function edit(Lesson $lesson, User $user)
     {
         //
     }
@@ -67,7 +76,7 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Lesson $lesson)
+    public function update(Request $request, Lesson $lesson, User $user)
     {
         //
     }
@@ -78,7 +87,7 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Lesson $lesson)
+    public function destroy(Lesson $lesson, User $user)
     {
         //
     }

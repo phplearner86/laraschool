@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lesson extends Model
 {
-    protected $fillable = ['title', 'topic', 'goals', 'year', 'subject_id'];
+    protected $fillable = ['title', 'topic', 'goals', 'year'];
 
     protected static function boot()
    {
@@ -30,5 +30,16 @@ class Lesson extends Model
     {
         return $this->belongsTo(Subject::class);
     }
+
+    protected static function new($data)
+    {
+        $lesson = new static;
+
+        $lesson->title = $data->title;
+        $lesson->year = $data->year;
+        $lesson->subject()->associate($data->subject_id);
+
+        return $lesson;
+    } 
 
 }

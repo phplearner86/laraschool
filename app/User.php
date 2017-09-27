@@ -30,7 +30,7 @@ class User extends Authenticatable
 
     public function getRouteKeyName()
    {
-       return 'name ';
+       return 'name';
    }
 
    public function roles()
@@ -39,7 +39,12 @@ class User extends Authenticatable
    } 
 
    public function teacher()
-    {
+   {
         return $this->hasOne(Teacher::class);
+    }
+
+    public function assignLesson($lesson)
+    {
+      return  $this->teacher->lessons()->save($lesson);
     }
 }
