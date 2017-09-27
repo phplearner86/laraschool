@@ -26,4 +26,9 @@ class Subject extends Model
    {
      return $this->belongsToMany(Teacher::class)->withPivot('clasroom_id');
    }
+
+   public function lessons()
+   {
+      return $this->hasMany(Lesson::class);
+    }
 }
