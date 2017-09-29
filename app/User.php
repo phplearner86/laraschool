@@ -43,7 +43,7 @@ class User extends Authenticatable
         return $this->hasOne(Teacher::class);
     }
 
-    public function assignLesson($lesson)
+    public function saveLesson($lesson)
     {
       return  $this->teacher->lessons()->save($lesson);
     }

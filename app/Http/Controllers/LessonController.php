@@ -42,7 +42,7 @@ class LessonController extends Controller
         $lesson = Lesson::createNew($request);
 
         //Assign the lesson to the user
-        $user->assignLesson($lesson);
+        $user->saveLesson($lesson);
 
         flash()->success('Lesson has been created');
         return back();
@@ -65,9 +65,9 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function edit(Lesson $lesson, User $user)
+    public function edit(User $user, Lesson $lesson)
     {
-        //
+        return view('lessons.edit', compact('lesson', 'user'));
     }
 
     /**
@@ -77,9 +77,12 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function update(LessonRequest $request, Lesson $lesson, User $user)
+    public function update(LessonRequest $request, User $user, Lesson $lesson)
     {
-        //
+        $lesson->saveChanges($request, $lesson);
+
+        flash()->success('The lesson has been updated');
+        return redirect()->route('lessons.edit', [$user, $lesson]);
     }
 
     /**

@@ -48,5 +48,5 @@
 </div>
 
 <div class="form-group">
-    <button class="btn btn-success">Create lesson</button>
+    <button class="btn btn-success">{{ $button }}</button>
 </div>

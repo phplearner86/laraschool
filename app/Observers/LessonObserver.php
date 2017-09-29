@@ -10,4 +10,9 @@ class LessonObserver{
     {
         $lesson->slug = str_slug($lesson->title);
     }
+
+    public function updating(Lesson $lesson)
+    {
+        $lesson->slug = str_slug($lesson->title);
+    }
 }

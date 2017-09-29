@@ -44,4 +44,15 @@ class Lesson extends Model
         return $lesson;
     } 
 
+    public function saveChanges($data, $lesson)
+    {
+        $lesson->year = $data->year;
+        $lesson->title = $data->title;
+        $lesson->topic = $data->topic;
+        $lesson->goals = $data->goals;
+        $lesson->subject()->associate($data->subject_id);
+
+        return $lesson->save();
+    }
+
 }

@@ -27,6 +27,7 @@ class LessonRequest extends FormRequest
      */
     public function rules()
     {
+        //dd($this->method());
         $years = implode(',', array_keys(Year::all()));
 
         $subject_ids = $this->user->teacher->subjects->unique()->pluck('id')->toArray();
@@ -34,29 +35,65 @@ class LessonRequest extends FormRequest
 
         $titles = $this->user->teacher->lessons->pluck('title');
 
-        return [
-            'subject_id' => [
-                'required',
-                'in:' . $subject_ids,
-            ],
-            'title' => [
-                'required',
-                'max:80',
-                Rule::unique('lessons')->where(function($query){
-                    $query->where('teacher_id', $this->user->teacher->id);
-                }),
-                new AlphaNumSpaces,
-            ],
-            'topic' => [
-                'required',
-                'max:150',
-                new AlphaNumSpacesPunctuation,
-            ],
-            'year' => 'required|in:' . $years,
-            'goals' => [
-                'required',
-                'max:300'
-            ]
-        ];
+        switch ($this->method()) {
+            case 'POST':
+                return [
+                    'subject_id' => [
+                        'required',
+                        'in:' . $subject_ids,
+                    ],
+                    'title' => [
+                        'required',
+                        'max:80',
+                        Rule::unique('lessons')->where(function($query){
+                            $query->where('teacher_id', $this->user->teacher->id);
+                        }),
+                        new AlphaNumSpaces,
+                    ],
+                    'topic' => [
+                        'required',
+                        'max:150',
+                        new AlphaNumSpacesPunctuation,
+                    ],
+                    'year' => 'required|in:' . $years,
+                    'goals' => [
+                        'required',
+                        'max:300'
+                    ]
+                ];
+                break;
+
+            case 'PUT':
+            case 'PATCH':
+                return [
+                    'subject_id' => [
+                        'required',
+                        'in:' . $subject_ids,
+                    ],
+                    'title' => [
+                        'required',
+                        'max:80',
+                        Rule::unique('lessons')->where(function($query){
+                            $query->where('teacher_id', $this->user->teacher->id);
+                        })->ignore($this->user->teacher->id, 'teacher_id'),
+                        new AlphaNumSpaces,
+                    ],
+                    'topic' => [
+                        'required',
+                        'max:150',
+                        new AlphaNumSpacesPunctuation,
+                    ],
+                    'year' => 'required|in:' . $years,
+                    'goals' => [
+                        'required',
+                        'max:300'
+                    ]
+                ];
+                break;
+            
+            
+        }
+
+        
     }
 }

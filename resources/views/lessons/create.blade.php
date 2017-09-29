@@ -17,7 +17,8 @@
             'year' => old('year'),
             'title' => old('title'),
             'topic' => old('topic'),
-            'goals' => old('goals')
+            'goals' => old('goals'),
+            'button' => 'Create lesson'
         ])
         
     </form>
