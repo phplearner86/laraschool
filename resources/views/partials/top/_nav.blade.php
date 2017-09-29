@@ -19,11 +19,13 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
-               <li>
+               @if (Auth::user())
+                   <li>
                     <a href="{{ route('lessons.create', Auth::user()->name) }}">
                         New Lesson
                     </a>
                 </li>
+               @endif
             </ul>
 
             <!-- Right Side Of Navbar -->

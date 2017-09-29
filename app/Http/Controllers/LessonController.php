@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LessonRequest;
 use App\Lesson;
+use App\Services\Utilities\Year;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -25,7 +27,6 @@ class LessonController extends Controller
      */
     public function create(User $user)
     {
-
         return view('lessons.create', compact('user'));
     }
 
@@ -35,10 +36,10 @@ class LessonController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(LessonRequest $request, User $user)
     {
         //Create lesson
-        $lesson = Lesson::new($request);
+        $lesson = Lesson::createNew($request);
 
         //Assign the lesson to the user
         $user->assignLesson($lesson);
@@ -76,7 +77,7 @@ class LessonController extends Controller
      * @param  \App\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Lesson $lesson, User $user)
+    public function update(LessonRequest $request, Lesson $lesson, User $user)
     {
         //
     }

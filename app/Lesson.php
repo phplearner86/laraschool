@@ -31,12 +31,14 @@ class Lesson extends Model
         return $this->belongsTo(Subject::class);
     }
 
-    protected static function new($data)
+    protected static function createNew($data)
     {
         $lesson = new static;
 
         $lesson->title = $data->title;
         $lesson->year = $data->year;
+        $lesson->topic = $data->topic;
+        $lesson->goals = $data->goals;
         $lesson->subject()->associate($data->subject_id);
 
         return $lesson;

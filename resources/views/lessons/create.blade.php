@@ -4,6 +4,7 @@
 
 @section('content')
  @include('flash::message')
+ @include('errors._list')
 
     <form action="{{ route('lessons.store', $user) }}" method="POST">
         {{ csrf_field() }}
@@ -41,6 +42,16 @@
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" class="form-control" name="title" placeholder="Enter lesson title" value="{{ old('title') }}">
+        </div>
+
+        <div class="form-group">
+            <label for="topic">Topic</label>
+            <input type="text" class="form-control" name="topic" placeholder="Enter topic" value="{{ old('topic') }}">
+        </div>
+
+        <div class="form-group">
+            <label for="goals">Goals</label>
+            <textarea name="goals" id="goals" class="form-control" cols="10" rows="5">{{ old('goals') }}</textarea>
         </div>
 
         <div class="form-group">
