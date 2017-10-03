@@ -13,6 +13,9 @@ Route::name('lessons.store')->post('lessons/{user}', 'LessonController@store');
 Route::name('lessons.edit')->get('lessons/{user}/{lesson}/edit', 'LessonController@edit');
 Route::name('lessons.update')->put('lessons/{user}/{lesson}', 'LessonController@update');
 
+//  Event
+Route::name('events.index')->get('calendar/{user}', 'EventController@index');
+
 
 
 

@@ -20,9 +20,14 @@
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
                @if (Auth::user())
-                   <li>
+               <li>
                     <a href="{{ route('lessons.create', Auth::user()->name) }}">
                         New Lesson
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('events.index', Auth::user()->name) }}">
+                        My Calendar
                     </a>
                 </li>
                @endif
