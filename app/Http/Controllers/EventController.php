@@ -13,8 +13,13 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $user)
+    public function index(Request $request, User $user)
     {
+        if ($request->ajax()) 
+        {
+           return $user->teacher->events;
+        }
+
         return view('events.index', compact('user'));
     }
 

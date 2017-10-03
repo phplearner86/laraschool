@@ -23,8 +23,12 @@
     <script src="{{ asset('vendor/timepicker/jquery-ui-timepicker-addon.js') }}"></script>
 
     <script>
-        
-    $('#calendar').fullCalendar({
+   
+    var calendar = $('#calendar');
+    var userName = "{{ $user->name }}";
+    var baseUrl = '../calendar/' + userName;
+    
+    calendar.fullCalendar({
         header:{
             left:'prev,next',
             center:'title',
@@ -49,8 +53,20 @@
             }
         ],
         eventLimit: true,
-        
-    });
+        eventSources: [
+            {
+                url: baseUrl
+            }
+        ],
+        eventColor: 'red',
+        displayEventTime: false,
+        select: function(start, event, jsEvent, view){
+            // Open modal
+        },
+
+
+
+    });//Fullcalendar
 
     </script>
 @endsection

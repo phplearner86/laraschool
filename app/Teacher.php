@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Event;
 use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
@@ -21,5 +22,10 @@ class Teacher extends Model
     public function lessons()
     {
         return $this->hasMany(Lesson::class);
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
     }
 }
