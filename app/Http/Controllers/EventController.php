@@ -39,9 +39,19 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
+        $event = $user->teacher->events()->create([
+            'title' => $request->title,
+            'subject_id' => $request->subject_id,
+            'start' => $request->date . ' ' . $request->start,
+            'end' => $request->date . ' ' . $request->end,
+        ]);
+
+        return response([
+            'message' => 'Event created',
+            'event' => $event,
+        ]);
     }
 
     /**

@@ -15,6 +15,8 @@ Route::name('lessons.update')->put('lessons/{user}/{lesson}', 'LessonController@
 
 //  Event
 Route::name('events.index')->get('calendar/{user}', 'EventController@index');
+Route::name('events.store')->post('calendar/{user}', 'EventController@store');
+
 
 
 

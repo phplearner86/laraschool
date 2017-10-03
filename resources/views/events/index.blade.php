@@ -13,6 +13,7 @@
 @section('content')
 
     <div id="calendar"></div>
+    @include('events.partials._eventModal')
         
 @endsection
 
@@ -53,15 +54,29 @@
             }
         ],
         eventLimit: true,
-        eventSources: [
+        eventSources: [ //Fetch all events
             {
                 url: baseUrl
             }
         ],
         eventColor: 'red',
         displayEventTime: false,
-        select: function(start, event, jsEvent, view){
+        select: function(start, event, jsEvent, view)
+        {
             // Open modal
+            $('#eventModal').modal('show');
+            $('.modal-title span').text('New event');
+            $('.modal-title i').addClass('fa-pencil');
+            $('.event-button').text('Create event').attr('id', 'storeEvent');
+            $('.cancel-button').text('Cancel');
+
+            //Selected field for event start    
+            start = moment(start.format());
+            $('#date').val(start.format('YYYY-MM-DD'));
+            $('#start').val(start.format('08:00'));
+            $('#end').val(start.format('08:45'));
+           // alert(start);
+
         },
 
 
@@ -69,5 +84,53 @@
     });//Fullcalendar
 
     </script>
+
+    <script>
+
+    $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+        
+    $(document).on('click', '#storeEvent', function(){
+
+        //Variables
+        var title = $('#title').val();
+        var subjectId = $('#subject_id').val();
+        var date = $('#date').val();
+        var start = $('#start').val();
+        var end = $('#end').val();
+        var startTime = date + ' ' + start;
+        var endTime = date + ' ' + end;
+
+        //Display event in full calendar
+        var event = {
+            title: title,
+            start: startTime,
+            end: endTime,
+            allDay: false
+        }
+
+        calendar.fullCalendar('renderEvent', event);
+
+        //Store event in DB
+        $.ajax({
+            url: baseUrl,
+            type: 'POST',
+            data: {
+                title: title,
+                subject_id: subjectId,
+                start: startTime,
+                end: endTime,
+            },
+            success: function(response){
+                console.log(response.message);
+                console.log(response.event);
+            }
+        })
+    });
+
+    </script>  
 @endsection
  
