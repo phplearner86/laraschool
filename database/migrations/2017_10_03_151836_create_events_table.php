@@ -23,6 +23,7 @@ class CreateEventsTable extends Migration
             $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
 
             $table->string('title');
+            $table->string('test')->nullable();
 
             $table->timestamp('start');
             $table->timestamp('end')->nullable();

@@ -4,6 +4,11 @@
 </div>
 
 <div class="form-group">
+    <label for="test">test</label>
+    <input type="text" class="form-control" name="test" id="test" placeholder="Enter event test">
+</div>
+
+<div class="form-group">
     <label for="subject_id">Subject</label>
     <select name="subject_id" id="subject_id" class="form-control">
         <option selected disabled="">Select Subject</option>

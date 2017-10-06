@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    protected $fillable = ['subject_id', 'title', 'start', 'end'];
+    protected $fillable = ['subject_id', 'title', 'test', 'start', 'end'];
     
     public function teacher()
     {

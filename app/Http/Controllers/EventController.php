@@ -43,6 +43,7 @@ class EventController extends Controller
     {
         $event = $user->teacher->events()->create([
             'title' => $request->title,
+            'test' => $request->test,
             'subject_id' => $request->subject_id,
             'start' => $request->date . ' ' . $request->start,
             'end' => $request->date . ' ' . $request->end,
@@ -50,7 +51,7 @@ class EventController extends Controller
 
         return response([
             'message' => 'Event created',
-            'event' => $event,
+            'event' => $event->load('subject'),
         ]);
     }
 
@@ -83,9 +84,20 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, User $user, Event $event)
     {
-        //
+        $event->update([
+            'title' => $request->title,
+            'test' => $request->test,
+            'subject_id' => $request->subject_id,
+            'start' => $request->date . ' ' . $request->start,
+            'end' => $request->date . ' ' . $request->end,
+        ]);
+
+        return response([
+            'message' => 'updated',
+            'event' => $event,
+        ]);
     }
 
     /**
@@ -94,8 +106,12 @@ class EventController extends Controller
      * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Event $event)
+    public function destroy(User $user, Event $event)
     {
-        //
+        $event->delete();
+        
+        return response([
+            'message' => 'deleted',
+        ]);
     }
 }
