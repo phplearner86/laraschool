@@ -87,7 +87,6 @@ class EventController extends Controller
     {
         $event->update([
             'title' => $request->title,
-            'test' => $request->test,
             'subject_id' => $request->subject_id,
             'start' => $request->date . ' ' . $request->start,
             'end' => $request->date . ' ' . $request->end,

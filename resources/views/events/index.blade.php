@@ -33,6 +33,10 @@
         });  
 
     var calendar = $('#calendar');
+    var dateFormat = 'YYYY-MM-DD';
+    var timeFormat = 'HH:mm';
+    var form = $("#eventForm");
+
     var userName = "{{ $user->name }}";
     var baseUrl = '../calendar/' + userName;
     
@@ -84,11 +88,9 @@
 
             //Selected field for event start    
             start = moment(start.format());
-            $('#eventDate').val(start.format('YYYY-MM-DD'));
-            $('#start').val(start.format('HH:mm'));
-            $('#end').val(start.format('HH:mm'));
-           // alert(start);
-
+            $('#eventDate').val(start.format(dateFormat));
+            $('#start').val(start.format(timeFormat));
+            $('#end').val(start.format(timeFormat));
         },
 
         eventClick: function(event, jsEvent, view)
@@ -99,18 +101,21 @@
                 return false;
             }
 
+            // Open modal
             $('#eventModal').modal('show').attr('data-event', event.id);
-            $('.modal-title span').text('Edit event');
-            $('.modal-title i').addClass('fa-pencil-square-o');
-            $('.event-button').text('Save changes').attr('id', 'editEvent');
-            $('.cancel-button').text('Delete').attr('id', 'deleteEvent');
 
-            $("input[name=title]").attr('id', '_title').val(event.title);
-            $("input[name=test]").attr('id', '_test').val(event.test);
-            $("select[name=subject_id]").attr('id', '_subject_id').val(event.subject_id);
-            $("input[name=date]").attr('id', '_date').val(moment(event.start).format('YYYY-MM-DD'));
-            $("input[name=start]").attr('id', '_start').val(moment(event.start).format('HH:mm'));
-            $("input[name=end]").attr('id', '_end').val(moment(event.end).format('HH:mm'));
+            // set modal parameters
+            $('.modal-title i').addClass('fa-pencil-square-o');
+            $('.modal-title span').text('Edit event');
+            $('.cancel-button').text('Delete').attr('id', 'deleteEvent');
+            $('.event-button').text('Save changes').attr('id', 'updateEvent');
+
+            // Populate modal form fields with evnt data
+            $("#title").val(event.title);
+            $("#subject_id").val(event.subject_id);
+            $("#eventDate").val(moment(event.start).format(dateFormat));
+            $("#start").val(moment(event.start).format(timeFormat));
+            $("#end").val(moment(event.end).format(timeFormat));
         },
 
 
@@ -121,8 +126,8 @@
 
     <script>
 
-     var form = $("#eventForm");
-
+     
+    // Form submit
     form.on('submit', function(e){
 
         // Prevents page refresh
@@ -139,26 +144,66 @@
 
         // Create new event object
         event = {
-            title: title,
-            subject_id: subjectId,
-            start: startTime,
-            end: endTime,
+                title: title,
+                subject_id: subjectId,
+                start: startTime,
+                end: endTime,
         }
 
-        // Displey the event in the calendar
-        calendar.fullCalendar('renderEvent', event);
+        // Store event
+        if ($('.event-button').attr('id') == 'storeEvent') 
+        {
+            // Displey the event in the calendar
+            calendar.fullCalendar('renderEvent', event);
 
-        // Store event in DB
-        $.ajax({
-            url: baseUrl,
-            type: 'POST',
-            data: event,
-            success: function(response){
-                $('.modal').modal('hide');
-                console.log(response.event);
-                console.log(response.message);
-            }
-        })
+            // Store event in DB
+            $.ajax({
+                url: baseUrl,
+                type: 'POST',
+                data: event,
+                success: function(response){
+                    $('.modal').modal('hide');
+
+                    calendar.fullCalendar('refetchEvents');
+
+                    console.log(response.event);
+                    console.log(response.message);
+                }
+            })
+        }
+
+        // Update event
+        if ($('.event-button').attr('id') == 'updateEvent')
+        {
+            // Event url
+            var eventId = $('#eventModal').attr('data-event');
+            var eventUrl = baseUrl + '/' + eventId;
+
+            // Update event in calendar
+            var allEvents = calendar.fullCalendar('clientEvents', eventId);
+
+            allEvents[0].title = title;
+            allEvents[0].subject_id = subjectId;
+            allEvents[0].start = startTime;
+            allEvents[0].end = endTime;
+
+            calendar.fullCalendar('updateEvent', allEvents[0]);
+
+            // Update event in DB
+            $.ajax({
+                 url: eventUrl,
+                 type: 'PUT',
+                 data: event,
+                 success: function(response){
+                    $('.modal').modal('hide');
+
+                    console.log(response.event);
+                    console.log(response.message);
+                 }
+            })
+        }
+
+
 
 
     });
