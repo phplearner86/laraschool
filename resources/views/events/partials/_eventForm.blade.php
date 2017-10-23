@@ -1,13 +1,10 @@
+{{-- Title --}}
 <div class="form-group">
     <label for="title">Title</label>
     <input type="text" class="form-control" name="title" id="title" placeholder="Enter event title">
 </div>
 
-<div class="form-group">
-    <label for="test">test</label>
-    <input type="text" class="form-control" name="test" id="test" placeholder="Enter event test">
-</div>
-
+{{-- Subject --}}
 <div class="form-group">
     <label for="subject_id">Subject</label>
     <select name="subject_id" id="subject_id" class="form-control">
@@ -20,14 +17,16 @@
     </select>
 </div>
 
+{{-- Date --}}
 <div class="form-group">
-    <label for="date">Date</label>
+    <label for="eventDate">Date</label>
     <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-        <input type="text" class="form-control" name="date" id="date"  placeholder="yyyy-mm-dd">
+        <input type="text" class="form-control" name="eventDate" id="eventDate"  placeholder="yyyy-mm-dd">
     </div>
 </div>
 
+{{-- Start & End --}}
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">

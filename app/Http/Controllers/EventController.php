@@ -43,7 +43,6 @@ class EventController extends Controller
     {
         $event = $user->teacher->events()->create([
             'title' => $request->title,
-            'test' => $request->test,
             'subject_id' => $request->subject_id,
             'start' => $request->date . ' ' . $request->start,
             'end' => $request->date . ' ' . $request->end,

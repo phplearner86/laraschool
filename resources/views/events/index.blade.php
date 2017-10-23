@@ -18,8 +18,11 @@
 @endsection
 
 @section('scripts')
+    {{-- CSRF Token --}}
+    <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('vendor/moment/moment.js') }}"></script>
     <script src="{{ asset('vendor/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('vendor/fullcalendar/gcal.min.js') }}"></script>
     <script src="{{ asset('vendor/datepicker/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('vendor/timepicker/jquery-ui-timepicker-addon.js') }}"></script>
 
@@ -58,9 +61,13 @@
             }
         ],
         eventLimit: true,
+        googleCalendarApiKey: 'AIzaSyDCHznGd0tw07cQQfGZONGqTaknvzF7r2Q',
         eventSources: [ //Fetch all events
             {
                 url: baseUrl
+            },
+            {
+                googleCalendarId: 'en.rs#holiday@group.v.calendar.google.com'
             }
         ],
         eventColor: 'red',
@@ -69,22 +76,29 @@
         {
             // Open modal
             $('#eventModal').modal('show');
-            $('.modal-title span').text('New event');
+
             $('.modal-title i').addClass('fa-pencil');
-            $('.event-button').text('Create event').attr('id', 'storeEvent');
+            $('.modal-title span').text('New event');
             $('.cancel-button').text('Cancel');
+            $('.event-button').text('Create event').attr('id', 'storeEvent');
 
             //Selected field for event start    
             start = moment(start.format());
-            $('#date').val(start.format('YYYY-MM-DD'));
-                $('#start').val(start.format('HH:mm'));
-                $('#end').val(start.format('HH:mm'));
+            $('#eventDate').val(start.format('YYYY-MM-DD'));
+            $('#start').val(start.format('HH:mm'));
+            $('#end').val(start.format('HH:mm'));
            // alert(start);
 
         },
 
         eventClick: function(event, jsEvent, view)
         {
+            //Open link in new window
+            if (event.url) {
+                window.open(event.url);
+                return false;
+            }
+
             $('#eventModal').modal('show').attr('data-event', event.id);
             $('.modal-title span').text('Edit event');
             $('.modal-title i').addClass('fa-pencil-square-o');
@@ -107,124 +121,50 @@
 
     <script>
 
-    $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-    });
-        
-    $(document).on('click', '#storeEvent', function(){
+     var form = $("#eventForm");
 
-        //Variables
+    form.on('submit', function(e){
+
+        // Prevents page refresh
+        e.preventDefault();
+
+        // Event attributes
         var title = $('#title').val();
-        var test = $('#test').val();
         var subjectId = $('#subject_id').val();
-        var date = $('#date').val();
+        var date = $('#eventDate').val();
         var start = $('#start').val();
         var end = $('#end').val();
         var startTime = date + ' ' + start;
         var endTime = date + ' ' + end;
 
-        //Display event in full calendar
-        var event = {
+        // Create new event object
+        event = {
             title: title,
-            test: test,
             subject_id: subjectId,
             start: startTime,
             end: endTime,
-            allDay: false
         }
 
+        // Displey the event in the calendar
         calendar.fullCalendar('renderEvent', event);
 
-        //Store event in DB
+        // Store event in DB
         $.ajax({
             url: baseUrl,
             type: 'POST',
-            data: {
-                title: title,
-                test: test,
-                subject_id: subjectId,
-                start: startTime,
-                end: endTime,
-            },
+            data: event,
             success: function(response){
-                console.log(response.message);
+                $('.modal').modal('hide');
                 console.log(response.event);
-            }
-        })
-    });
-
-    $(document).on('click', '#editEvent', function(){
-
-        //Variables
-        var title = $('#_title').val();
-        var test = $('#_test').val();
-        var subjectId = $('#_subject_id').val();
-        var date = $('#_date').val();
-        var start = $('#_start').val();
-        var end = $('#_end').val();
-        var startTime = date + ' ' + start;
-        var endTime = date + ' ' + end;
-
-        var eventId = $('#eventModal').attr('data-event');
-        var eventUrl = baseUrl + '/' + eventId;
-
-        //Update calendar
-
-        var event = calendar.fullCalendar('clientEvents', eventId);
-        event[0].id = eventId;
-        event[0].title = title;
-        event[0].test = test;
-        event[0].subject_id = subjectId;
-        event[0].date = date;
-        event[0].start = start;
-        event[0].end = end;
-
-        calendar.fullCalendar('updateEvent', event[0]);      
-
-        //Update DB
-        $.ajax({
-            url: eventUrl,
-            type: 'PUT',
-            data: {
-                id: eventId,
-                title: title,
-                test: test,
-                subject_id: subjectId,
-                start: startTime,
-                end: endTime,
-            },
-            success: function(response){
-                console.log(response.message);
-                console.log(response.event);
-            }
-        })
-    });
-
-    $(document).on('click', '#deleteEvent', function()
-    {
-        //Ebent URl
-        var eventId = $('#eventModal').attr('data-event');
-        var eventUrl = baseUrl + '/' + eventId;
-
-        //Remove from calendar
-
-        calendar.fullCalendar('removeEvents', eventId);
-
-        //Delete from DB
-          $.ajax({
-            url: eventUrl,
-            type: 'DELETE',
-            data: {
-                id: eventId,
-            },
-            success: function(response){
                 console.log(response.message);
             }
         })
+
+
+    });
         
-    });
+
+    
 
     
 
