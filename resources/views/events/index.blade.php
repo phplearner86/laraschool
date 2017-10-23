@@ -35,6 +35,7 @@
     var calendar = $('#calendar');
     var dateFormat = 'YYYY-MM-DD';
     var timeFormat = 'HH:mm';
+    var eventModal = $('#eventModal');
     var form = $("#eventForm");
 
     var userName = "{{ $user->name }}";
@@ -79,7 +80,7 @@
         select: function(start, event, jsEvent, view)
         {
             // Open modal
-            $('#eventModal').modal('show');
+            eventModal.modal('show');
 
             $('.modal-title i').addClass('fa-pencil');
             $('.modal-title span').text('New event');
@@ -102,7 +103,7 @@
             }
 
             // Open modal
-            $('#eventModal').modal('show').attr('data-event', event.id);
+            eventModal.modal('show').attr('data-event', event.id);
 
             // set modal parameters
             $('.modal-title i').addClass('fa-pencil-square-o');
@@ -176,7 +177,7 @@
         if ($('.event-button').attr('id') == 'updateEvent')
         {
             // Event url
-            var eventId = $('#eventModal').attr('data-event');
+            var eventId = eventModal.attr('data-event');
             var eventUrl = baseUrl + '/' + eventId;
 
             // Update event in calendar
@@ -202,14 +203,28 @@
                  }
             })
         }
-
-
-
-
-    });
+    });//Submit form
         
 
-    
+    $(document).on('click', '#deleteEvent', function(){
+
+        // Event url
+        var eventId = eventModal.attr('data-event');
+        var eventUrl = baseUrl + '/' + eventId;
+
+        // Remove event from calendar
+        calendar.fullCalendar('removeEvents', eventId);
+
+        // Remove event from database
+        $.ajax({
+            url: eventUrl,
+            type: 'DELETE',
+            success: function(response){
+                console.log(response.message);
+             }
+        })
+
+    })
 
     
 
