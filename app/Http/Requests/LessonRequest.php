@@ -28,10 +28,12 @@ class LessonRequest extends FormRequest
     public function rules()
     {
         //dd($this->method());
-        $years = implode(',', array_keys(Year::all()));
 
         $subject_ids = $this->user->teacher->subjects->unique()->pluck('id')->toArray();
         $subject_ids = implode(',', $subject_ids);
+
+        $years = $this->user->teacher->subjects()->where('subject_id', $this->subject_id)->pluck('year')->unique()->toArray();
+        $years = implode(',', $years);
 
         $titles = $this->user->teacher->lessons->pluck('title');
 

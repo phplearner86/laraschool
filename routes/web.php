@@ -19,7 +19,9 @@ Route::name('events.store')->post('calendar/{user}', 'EventController@store');
 Route::name('events.update')->put('calendar/{user}/{event}', 'EventController@update');
 Route::name('events.delete')->delete('calendar/{user}/{event}', 'EventController@destroy');
 
-
+// Subject
+Route::resource('subjects', 'SubjectController');
+Route::name('subjects.userSubject')->get('subjects/{user}/{param}/{lesson?}', 'SubjectController@userSubject');
 
 
 

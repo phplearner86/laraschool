@@ -6,12 +6,20 @@
     <link rel="stylesheet" href="{{ asset('vendor/fullcalendar/fullcalendar.min.css') }}">
     {{-- Type-media is ESSENTIAL --}}
     <link rel="stylesheet" href="{{ asset('vendor/fullcalendar/fullcalendar.print.min.css') }}" type="media">
-    <link rel="stylesheet" href="{{ asset('vendor/datepicker/jquery-ui.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="{{ asset('vendor/timepicker/jquery-ui-timepicker-addon.css') }}">
+    <style>
+        /*datepicker is under bs modal by default*/
+        .ui-datepicker{
+            z-index: 1600 !important; /*must be > 1050*/
+        }
+        .mark-holiday .ui-state-default{
+            color: red !important;
+        } 
+    </style>
 @endsection
 
 @section('content')
-
     <div id="calendar"></div>
     @include('events.partials._eventModal')
         
@@ -19,12 +27,81 @@
 
 @section('scripts')
     {{-- CSRF Token --}}
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/custom_app.js') }}"></script>
     <script src="{{ asset('vendor/moment/moment.js') }}"></script>
     <script src="{{ asset('vendor/fullcalendar/fullcalendar.min.js') }}"></script>
     <script src="{{ asset('vendor/fullcalendar/gcal.min.js') }}"></script>
-    <script src="{{ asset('vendor/datepicker/jquery-ui.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ asset('vendor/timepicker/jquery-ui-timepicker-addon.js') }}"></script>
+
+    <script>
+    var calendar = $('#calendar');
+    var dateFormat = 'YYYY-MM-DD';
+    var timeFormat = 'HH:mm';
+    var eventModal = $('#eventModal');
+    var form = $("#eventForm");
+
+    
+
+        $("#eventDate").datepicker({
+            dateFormat: "yy-mm-dd", // 2017-09-27
+            minDate: 0, // today
+            maxDate: datepickerMaxDate(),
+            changeMonth: true,
+            changeYear: true,
+            firstDay: 1, // Monday,
+            beforeShowDay: function(date) // disable and mark in red Sundays & holidays
+            {
+                var day = date.getDay(),
+                    year = date.getFullYear(),
+                    formattedDate = jQuery.datepicker.formatDate('yy-mm-dd', date),
+
+                    January1 = year + "-01-01",
+                    January2 = year + "-01-02",
+                    January7 = year + "-01-07",
+                    February15 = year + "-02-15",
+                    February16 = year + "-02-16",
+                    May1 = year + "-05-01",
+                    May2 = year + "-05-02",
+                    November11 = year + "-11-11",
+                    GoodFriday = orthodoxEasterSunday(year).subtract(2, 'd').format(dateFormat),
+                    EasterMonday = orthodoxEasterSunday(year).add(1, 'd').format(dateFormat);
+
+                    var holidays = [January1, January2, January7, February15, February16, May1, May2, November11, GoodFriday, EasterMonday];
+
+                // Sundays
+                if (day == 0)
+                {
+                    // false = nonselectable field, markholiday = css class
+                    return [false, "mark-holiday"];
+                }
+                else
+                {
+                    // returns -1 if the value is not in the array, otherways returns the value of the index
+                    return (holidays.indexOf(formattedDate) == -1) ? [true] : [false, "mark-holiday"];
+                }
+            }
+        });
+
+
+        var startTime = $('#start');
+        var endTime = $('#end');
+
+        $.timepicker.timeRange(
+            startTime, 
+            endTime,
+            {
+                controlType: 'select', //dropdown instead slider
+                oneLine: true, 
+                hourMin: 8,
+                hourMax: 20,
+            }
+        )
+
+
+  
+  </script>
+
 
     <script>
    
@@ -32,14 +109,12 @@
             $("input, textarea, select").val("").end();
         });  
 
-    var calendar = $('#calendar');
-    var dateFormat = 'YYYY-MM-DD';
-    var timeFormat = 'HH:mm';
-    var eventModal = $('#eventModal');
-    var form = $("#eventForm");
+    
 
     var userName = "{{ $user->name }}";
     var baseUrl = '../calendar/' + userName;
+
+    
     
     calendar.fullCalendar({
         header:{
@@ -80,7 +155,12 @@
         select: function(start, event, jsEvent, view)
         {
             // Open modal
-            eventModal.modal('show');
+            if (isNotPast(start) && isNotSunday(start)) {
+                eventModal.modal('show');
+            }
+            else{
+                alert('Pasta date, holidays and Sundays are not available for creating for event!');
+            }
 
             $('.modal-title i').addClass('fa-pencil');
             $('.modal-title span').text('New event');
@@ -95,7 +175,7 @@
         },
 
         eventClick: function(event, jsEvent, view)
-        {
+            {
             //Open link in new window
             if (event.url) {
                 window.open(event.url);

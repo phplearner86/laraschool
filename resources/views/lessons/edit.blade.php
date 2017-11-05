@@ -26,3 +26,40 @@
         
 @endsection
  
+
+ @section('scripts')
+    
+    <script>
+
+        var subjectId = $('#subject_id').val();
+        var url = '../../../subjects/{{ $user->name }}/' + subjectId + '/' + '{{ $lesson->slug }}';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success:function(response)
+            {
+                console.log(response);
+                $('#year').html(response);
+            }
+        })
+
+
+    $('#subject_id').on('change', function(e){
+
+        var subjectId = e.target.value;
+        var url = '../../../subjects/{{ $user->name }}/' + subjectId;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success:function(response)
+            {
+                console.log(response);
+                $('#year').html(response);
+            }
+        })
+    })
+    </script>
+
+@endsection

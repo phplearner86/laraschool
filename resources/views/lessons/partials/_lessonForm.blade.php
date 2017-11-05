@@ -19,14 +19,14 @@
         <div class="form-group">
             <label for="year">Academic Year</label>
             <select name="year" id="year" class="form-control">
-                <option selected disabled="">Select Year</option>
-                @foreach (Year::all() as $label=>$name)
+                <option  value="">Select Year</option>
+                {{-- @foreach (Year::all() as $label=>$name)
                     <option value="{{ $label }}"
                     {{ selected($label, $year) }}
                     > 
                         {{ $label }}
                     </option>
-                @endforeach
+                @endforeach --}}
             </select>
         </div>
     </div>

@@ -6,7 +6,7 @@
 
     @include('flash::message')
     @include('errors._list')
-
+    
     <h1 class="page-header"><i class="fa fa-plus"></i> New lesson</h1>
 
     <form action="{{ route('lessons.store', $user) }}" method="POST">
@@ -23,5 +23,29 @@
         
     </form>
         
+@endsection
+
+@section('scripts')
+    
+    <script>
+
+
+    $('#subject_id').on('change', function(e){
+
+        var subjectId = e.target.value;
+        var url = '../../subjects/{{ $user->name }}/' + subjectId;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success:function(response)
+            {
+                console.log(response);
+                $('#year').html(response);
+            }
+        })
+    })
+    </script>
+
 @endsection
  

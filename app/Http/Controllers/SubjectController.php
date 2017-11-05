@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Lesson;
 use App\Subject;
+use App\User;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
@@ -46,7 +48,7 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
-        //
+
     }
 
     /**
@@ -81,5 +83,15 @@ class SubjectController extends Controller
     public function destroy(Subject $subject)
     {
         //
+    }
+
+    public function userSubject(User $user, $param, Lesson $lesson)
+    {
+        $subject = Subject::where('id', $param)
+            ->orWhere('slug', $param)->first();
+
+        $subjectYears = $user->teacher->subjects()->where('subject_id', $subject->id)->pluck('year')->unique();
+
+        return view('years.subjectYears', compact('user', 'subject', 'subjectYears', 'lesson'));
     }
 }
